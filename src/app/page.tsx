@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { apis } from '@/data/apis';
 import { categories as initialCategories } from '@/data/categories';
 import { ApiEntry } from '@/data/types';
@@ -15,11 +15,13 @@ import { ApiCard } from '@/components/ApiCard';
 import { ApiDetailModal } from '@/components/ApiDetailModal';
 import { Footer } from '@/components/Footer';
 import { SearchX, Heart, RotateCcw } from 'lucide-react';
+import { ApiCardSkeleton } from '@/components/ApiCardSkeleton';
 
 export default function Home() {
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
   const [selectedApi, setSelectedApi] = useState<ApiEntry | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Custom Hooks
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
@@ -40,6 +42,12 @@ export default function Home() {
     clearFilters,
     hasActiveFilters,
   } = useSearch(apis);
+  
+  // Simulate loading state to test api card skeleton, update logic when backend is added
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, [query, categoryId, pricing, auth, difficulty, sortBy]);
 
   // Dynamic category counts based on current dataset
   const categoriesWithCounts = useMemo(
@@ -139,7 +147,13 @@ export default function Home() {
         )}
 
         {/* API Grid */}
-        {displayedApis.length > 0 ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <ApiCardSkeleton key={index} />
+            ))}
+          </div>
+        ) : displayedApis.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {displayedApis.map((api) => (
               <ApiCard
