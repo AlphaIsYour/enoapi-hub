@@ -172,7 +172,7 @@ export function ApiCard({
           className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 text-white px-3 py-1.5 text-xs font-semibold hover:bg-blue-700 active:scale-95 transition-all shadow-sm shadow-blue-500/20"
           aria-label={`Open translator for ${api.name}`}
         >
-          <span>Translator</span>
+          <span>Details</span>
           <ArrowRight className="h-3.5 w-3.5" />
         </button>
       </div>
